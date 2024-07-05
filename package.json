@@ -1,7 +1,7 @@
 {
   "name": "auto-magic",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000",
+  "proxy": "https://curly-correy-auto-magic-570b17c6.koyeb.app/",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
