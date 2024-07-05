@@ -51,35 +51,7 @@ const Home = () => {
       authContext.setAuth(false);
     }
   }, [isAuthenticated, authContext]);
-  // const handleLogin = async () => {
-  //   try {
-  //     await loginWithRedirect();
-  //     authContext.setAuth((authContext.auth = isAuthenticated));
-  //     console.log("isAuthenticated on log In =>>", isAuthenticated);
-  //     setTimeout(() => {
-  //       console.log("isAuthenticated on log In =>>", isAuthenticated);
-  //     }, 10000);
-  //   } catch (error) {
-  //     CustomToast({ type: "error", message: "Please try again Logging In!" });
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     CustomToast({ type: "success", message: "User Logged In Successfully" });
-  //   }
-  // }, [isAuthenticated]);
 
-  // const handleLogout = async () => {
-  //   try {
-  //     localStorage.clear();
-  //     logout({ returnTo: window.location.origin });
-  //     // console.log("isAuthenticated on log out =>>", isAuthenticated);
-  //   } catch (error) {
-  //     CustomToast({ type: "error", message: "Please try again logging out!" });
-  //   } finally {
-  //     CustomToast({ type: "success", message: "User Logged Out" });
-  //   }
-  // };
   const handleSearch = async () => {
     const keysToRemove = [
       "reviewData",
