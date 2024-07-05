@@ -201,16 +201,6 @@ const Home = () => {
             {isLoading ? <ButtonLoader /> : "Log In"}
           </button>
         )}
-        {/* <p className="bg-blue-500 text-white mt-[20px] mr-[10px]">
-          {" "}
-          Auth Value is {authContext.auth === false ? "false" : "true"}
-        </p>
-        <button
-          className="bg-blue-500 text-white mr-[10px]"
-          onClick={() => authContext.setAuth(!authContext.auth)}
-        >
-          Toggle Auth
-        </button> */}
       </div>
     </div>
   );

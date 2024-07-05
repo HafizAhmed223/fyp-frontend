@@ -10,8 +10,6 @@ import {
   FaLightbulb,
   FaChartLine,
   FaBoxOpen,
-  FaUserTie,
-  FaBox,
   FaBalanceScale,
 } from "react-icons/fa";
 
@@ -69,10 +67,18 @@ const CompetitorAnalysis = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/competitor/analysis", {
-        asin1,
-        asin2,
-      });
+      const response = await axios.post(
+        "https://breakable-jacquelin-auto-magic-04c769ea.koyeb.app/api/competitor/analysis",
+        {
+          asin1,
+          asin2,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.data || response.data.length === 0) {
         CustomToast({ type: "error", message: "No Competitors Available" });
       } else {
