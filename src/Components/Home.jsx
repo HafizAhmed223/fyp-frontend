@@ -68,9 +68,17 @@ const Home = () => {
         if (asinRegex.test(asin)) {
           try {
             setLoading(true); // Set loading to true when search starts
-            const response = await axios.post("/api/search/product/reviews", {
-              asin: asin,
-            });
+            const response = await axios.post(
+              "https://breakable-jacquelin-auto-magic-04c769ea.koyeb.app/api/search/product/reviews",
+              {
+                asin: asin,
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
             keysToRemove.forEach((key) => {
               localStorage.removeItem(key);
               console.log(`${key} has been removed from localStorage`);
