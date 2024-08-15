@@ -76,7 +76,7 @@ const Home = () => {
           try {
             setLoading(true);
             const response = await axios.post(
-              "/api/search/product/reviews",
+              "https://breakable-jacquelin-auto-magic-04c769ea.koyeb.app/api/search/product/reviews",
               { asin: asin },
               { headers: { "Content-Type": "application/json" } } // Set the content type here
             );

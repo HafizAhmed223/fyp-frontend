@@ -69,7 +69,7 @@ const CompetitorAnalysis = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "/api/competitor/analysis",
+        "https://breakable-jacquelin-auto-magic-04c769ea.koyeb.app/api/competitor/analysis",
         {
           asin1,
           asin2,
