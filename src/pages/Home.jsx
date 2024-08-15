@@ -32,10 +32,13 @@ const Home = () => {
   const handleLogin = async () => {
     try {
       await loginWithRedirect();
-      await setAuth(isAuthenticated);
+
       console.log("auth on log In =>>", auth);
     } catch (error) {
       CustomToast({ type: "error", message: "Please try again Logging In!" });
+    }
+    if (user.name) {
+      setAuth(isAuthenticated);
     }
   };
   // useEffect(() => {
