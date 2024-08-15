@@ -8,14 +8,14 @@ import "../../src/index.css";
 import VideoModal from "../Shared/VideoModal";
 import { FaUserTie } from "react-icons/fa";
 import AuthContext from "../context/AuthContext";
+
 const Home = () => {
   const [asin, setAsin] = useState("");
   const { auth, setAuth } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false); // State variable for loading status
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   let inputRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -23,40 +23,43 @@ const Home = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
   const handleOnChange = (e) => {
     setAsin(e.target.value);
   };
+
   const { loginWithRedirect, logout, isLoading, isAuthenticated, user } =
     useAuth0();
 
   const handleLogin = async () => {
     try {
       await loginWithRedirect();
-      console.log("auth on log In =>>", auth);
+      // You can remove the console.log or handle it after the login
     } catch (error) {
       CustomToast({ type: "error", message: "Please try again Logging In!" });
     }
   };
-  // useEffect(() => {
-  //   if (auth) {
-  //     CustomToast({ type: "success", message: "User Logged In Successfully" });
-  //   }
-  // }, [auth]);
-  useEffect(() => {
-    setAuth(isAuthenticated);
-  });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      setAuth(true);
+      CustomToast({ type: "success", message: "User Logged In Successfully" });
+    } else {
+      setAuth(false);
+    }
+  }, [isAuthenticated, setAuth]);
   const handleLogout = async () => {
     try {
       localStorage.clear();
-      logout({ returnTo: window.location.origin });
-      // console.log("auth on log out =>>", auth);
+      setAuth(false);
+      await logout({ returnTo: window.location.origin });
     } catch (error) {
       CustomToast({ type: "error", message: "Please try again logging out!" });
     } finally {
       CustomToast({ type: "success", message: "User Logged Out" });
     }
   };
+
   const handleSearch = async () => {
     const keysToRemove = [
       "reviewData",
@@ -66,13 +69,12 @@ const Home = () => {
       "productSentiments",
     ];
 
-    // localStorage.clear();
     if (auth) {
       const asinRegex = /^[A-Z0-9]{10}$/;
       if (asin !== "") {
         if (asinRegex.test(asin)) {
           try {
-            setLoading(true); // Set loading to true when search starts
+            setLoading(true);
             const response = await axios.post("/api/search/product/reviews", {
               asin: asin,
             });
@@ -81,8 +83,7 @@ const Home = () => {
               console.log(`${key} has been removed from localStorage`);
             });
             if (response.data.scrapedData.length === 0) {
-              // console.log('Length =>', response.data.scrapedData.length)
-              CustomToast({ type: "error", message: "No Reviews Availble" });
+              CustomToast({ type: "error", message: "No Reviews Available" });
             } else {
               CustomToast({ type: "success", message: response.data.message });
               console.log(response.data);
@@ -96,7 +97,7 @@ const Home = () => {
             CustomToast({ type: "error", message: "Error Scrapping Reviews" });
             console.error("Error while searching:", error);
           } finally {
-            setLoading(false); // Set loading to false when search completes
+            setLoading(false);
           }
         } else {
           CustomToast({ type: "error", message: "Please enter a valid ASIN." });
@@ -112,12 +113,14 @@ const Home = () => {
       CustomToast({ type: "error", message: "Please Login First!" });
     }
   };
+
   useEffect(() => {
     inputRef.current.focus();
   });
+
   return (
     <div className="flex flex-col items-center justify-center py-6">
-      <div className="font-rubik font-bold text-blue-500 text-center text-4xl md:text-6xl lg:text-6xl xl:text-8xl py-12">
+      <div className="font-rubik font-bold text-blue-500 text-center text-5xl md:text-6xl lg:text-8xl xl:text-8xl py-12">
         <span className="text-gray-600">A</span>
         <span className="text-gray-500">U</span>
         <span className="text-gray-400">T</span>
@@ -130,14 +133,14 @@ const Home = () => {
         <span className="text-gray-700">C</span>
       </div>
       <div className="mb-8 text-center font-rubik font-bold text-gray-300 text-xl md:text-2xl lg:text-3xl xl:text-3xl hover:text-blue-800 hover:font-semibold hover:transform hover:scale-105">
-        <p className="">Transforming voices into insights,</p>
-        <p className="">and insights into action.</p>
+        <p>Transforming voices into insights,</p>
+        <p>and insights into action.</p>
       </div>
       {auth && (
         <div className="flex flex-col items-center font-bold cursor-pointer mb-4 text-3xl">
           <strong className="text-blue-500 font-semibold text-center hover:transform hover:scale-105 mr-4">
             Welcome
-          </strong>{" "}
+          </strong>
           <span className="flex justify-center text-blue-600 font-semibold hover:font-bold hover:transform hover:scale-105">
             {user.name.split(" ")[0].toUpperCase()}
             <FaUserTie className="ml-2 w-7 lg:w-8 h-7 lg:h-8" />
@@ -153,7 +156,7 @@ const Home = () => {
             className="outline-none text-gray-400 text-center placeholder-gray-400 w-full rounded-full pl-2 bg-transparent"
             ref={inputRef}
           />
-          <div className="flex justify-center ml-3 my-2 ">
+          <div className="flex justify-center ml-3 my-2">
             <button
               onClick={handleSearch}
               disabled={loading}
