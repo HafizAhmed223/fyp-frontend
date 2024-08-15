@@ -43,7 +43,7 @@ const Home = () => {
   useEffect(() => {
     if (isAuthenticated) {
       setAuth(true);
-      CustomToast({ type: "success", message: "User Logged In Successfully" });
+      // CustomToast({ type: "success", message: "User Logged In Successfully" });
     } else {
       setAuth(false);
     }
@@ -136,7 +136,7 @@ const Home = () => {
         <p>Transforming voices into insights,</p>
         <p>and insights into action.</p>
       </div>
-      {auth && (
+      {user && (
         <div className="flex flex-col items-center font-bold cursor-pointer mb-4 text-3xl">
           <strong className="text-blue-500 font-semibold text-center hover:transform hover:scale-105 mr-4">
             Welcome
