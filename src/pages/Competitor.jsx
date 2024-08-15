@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import CustomToast from "./Shared/alertModal";
-import ButtonLoader from "./Shared/ButtonLoader";
+import CustomToast from "../Shared/alertModal";
+import ButtonLoader from "../Shared/ButtonLoader";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import {
   FaStar,
@@ -12,29 +12,30 @@ import {
   FaBoxOpen,
   FaBalanceScale,
 } from "react-icons/fa";
+import AuthContext from "../context/AuthContext";
 
 const CompetitorAnalysis = () => {
   const [asins, setAsins] = useState({ asin1: "", asin2: "" });
   const [analysisResult, setAnalysisResult] = useState(null);
   const [insights, setInsights] = useState("");
   const [loading, setLoading] = useState(false);
-  const [auth, setAuth] = useState(true);
-  const [buttonText, setButtonText] = useState("Generate Reviews");
+  // const [auth, setAuth] = useState(true);
+  const [buttonText, setButtonText] = useState("Get Reviews");
   const googleApiKey = "AIzaSyD1fQVny_MTn3jxulRXXlqtCWLQkX8j2c8";
-
+  const { auth } = useContext(AuthContext);
   useEffect(() => {
     const storedReviews = localStorage.getItem("productReview");
     const storedSentiments = localStorage.getItem("productSentiments");
 
     if (storedReviews) {
       setAnalysisResult(JSON.parse(storedReviews));
-      setButtonText("Generate Insights");
+      setButtonText("Get Insights");
     }
     if (storedSentiments) {
       setInsights(storedSentiments);
-      setButtonText("Generate Reviews");
+      setButtonText("Get Reviews");
     }
-    setAuth(localStorage.getItem("auth") === "true");
+    // setAuth(localStorage.getItem("auth") === "true");
   }, []);
 
   const handleAsinChange = (e) => {
@@ -67,28 +68,16 @@ const CompetitorAnalysis = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        "https://breakable-jacquelin-auto-magic-04c769ea.koyeb.app/api/competitor/analysis",
-        {
-          asin1,
-          asin2,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post("/api/competitor/analysis", {
+        asin1,
+        asin2,
+      });
       if (!response.data || response.data.length === 0) {
         CustomToast({ type: "error", message: "No Competitors Available" });
       } else {
         setAnalysisResult(response.data);
         localStorage.setItem("productReview", JSON.stringify(response.data));
-        CustomToast({
-          type: "success",
-          message: "Competitor Reviews Extracted Successfully",
-        });
-        setButtonText("Generate Insights");
+        setButtonText("Get Insights");
       }
       setAsins({ asin1: "", asin2: "" });
       setInsights("");
@@ -156,19 +145,19 @@ const CompetitorAnalysis = () => {
         Product 2:
         Average Rating:${avgRating2}
         Reviews of Product 2:
-        ${Product2}`;
+        ${Product2} `;
       const result = await model.generateContent(summaryPrompt);
       const response = result?.response;
       const summarizedText = response?.text();
       console.log("summarizedText ==>>", summarizedText);
       CustomToast({
         type: "success",
-        message: "Competitor Insights Extracted Successfully",
+        message: "Insights Extracted Successfully",
       });
 
       setInsights(summarizedText); // Set insights separately
       localStorage.setItem("productSentiments", summarizedText);
-      setButtonText("Generate Reviews");
+      setButtonText("Get Reviews");
     } catch (error) {
       console.error("Error generating summary:", error);
       CustomToast({ type: "error", message: "No Insights Available" });
@@ -183,7 +172,7 @@ const CompetitorAnalysis = () => {
         behavior: "smooth",
       });
     }
-  }, [insights]);
+  }, [insights, auth]);
 
   return (
     <div className="p-6 bg-slate-950">
@@ -224,10 +213,10 @@ const CompetitorAnalysis = () => {
       <div className="flex justify-center items-center border-gray-100">
         <button
           onClick={
-            buttonText === "Generate Reviews" ? handleSubmit : generateInsights
+            buttonText === "Get Reviews" ? handleSubmit : generateInsights
           }
           disabled={loading}
-          className="bg-orange-500 font-semibold shadow-md hover:bg-orange-600 w-54 text-xl text-white rounded-full px-6 py-3 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 hover:transform hover:scale-105 hover:shadow-lg"
+          className="bg-orange-500 font-semibold shadow-md hover:bg-orange-600 w-48 text-xl text-white rounded-full px-6 py-3 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 hover:transform hover:scale-105 hover:shadow-lg"
         >
           {loading ? <ButtonLoader /> : buttonText}
         </button>
@@ -313,11 +302,12 @@ const CompetitorAnalysis = () => {
 };
 
 const ProductCard = ({ product }) => {
-  const [auth, setAuth] = useState(true);
+  // const [auth, setAuth] = useState(true);
 
-  useEffect(() => {
-    setAuth(localStorage.getItem("auth") === "true");
-  }, []);
+  // useEffect(() => {
+  //   setAuth(localStorage.getItem("auth") === "true");
+  // }, []);
+  const { auth } = useContext(AuthContext);
 
   if (!product) return null;
 

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import Modal from "react-modal";
 import ReactPlayer from "react-player";
 
 const VideoModal = ({ isOpen, onClose }) => {
-  const crossIcon = require("../../Assets/cross_icon.png");
-  const videoUrl = require("../../Assets/asin_guide.mp4");
+  const crossIcon = require("../Assets/cross_icon.png");
+  const videoUrl = require("../Assets/asin_guide.mp4");
 
   return (
     <Modal
@@ -39,6 +39,7 @@ const VideoModal = ({ isOpen, onClose }) => {
         <img
           className="absolute top-0 right-4 m-4 p-2 hover:transform hover:scale-110 w-[30px] h-[30px] rounded-full bg-gray-200 bg-opacity-75"
           src={crossIcon}
+          alt="cross_icon"
           onClick={onClose}
         />
       </div>

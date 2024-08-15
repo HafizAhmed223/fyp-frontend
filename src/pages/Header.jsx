@@ -28,10 +28,8 @@ const Header = () => {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `lg:text-[23px] md:text-[25px] sm:text-[18px] text-[15px] mx-2 cursor-pointer transition duration-300 ease-in-out ${
-                isActive
-                  ? "text-gray-500 font-semibold border-b-[3px] border-gray-100"
-                  : "text-white"
+              `lg:text-[23px] md:text-[25px] sm:text-[18px] text-[15px] mx-2 cursor-pointer transition duration-300 ease-in-out hover:border-b-[3px] hover:border-gray-100 ${
+                isActive ? "text-gray-500 font-semibold " : "text-white"
               }`
             }
             end
@@ -41,10 +39,8 @@ const Header = () => {
           <NavLink
             to="/competitor-analysis"
             className={({ isActive }) =>
-              `lg:text-[23px] md:text-[25px] sm:text-[18px] text-[15px] mx-2 cursor-pointer transition duration-300 ease-in-out ${
-                isActive
-                  ? "text-gray-500 font-semibold border-b-[3px] border-gray-300 "
-                  : "text-white"
+              `lg:text-[23px] md:text-[25px] sm:text-[18px] text-[15px] mx-2 cursor-pointer transition duration-300 ease-in-out hover:border-b-[3px] hover:border-gray-100 ${
+                isActive ? "text-gray-500 font-semibold" : "text-white"
               }`
             }
           >
@@ -53,9 +49,9 @@ const Header = () => {
           <NavLink
             to="/about-us"
             className={({ isActive }) =>
-              `lg:text-[23px] md:text-[25px] sm:text-[18px] text-[15px] mx-2 cursor-pointer transition duration-300 ease-in-out ${
+              `lg:text-[23px] md:text-[25px] sm:text-[18px] text-[15px] mx-2 cursor-pointer transition duration-300 ease-in-out hover:border-b-[3px] hover:border-gray-100 ${
                 isActive
-                  ? "text-gray-500 font-semibold border-b-[3px] border-gray-100"
+                  ? "text-gray-500 font-semibold border-b-[3px]border-gray-100"
                   : "text-white"
               }`
             }

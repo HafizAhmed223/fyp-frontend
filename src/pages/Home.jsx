@@ -1,20 +1,21 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import CustomToast from "./Shared/alertModal";
-import ButtonLoader from "./Shared/ButtonLoader";
+import CustomToast from "../Shared/alertModal";
+import ButtonLoader from "../Shared/ButtonLoader";
 import { useAuth0 } from "@auth0/auth0-react";
 import "../../src/index.css";
-import VideoModal from "./Shared/VideoModal";
+import VideoModal from "../Shared/VideoModal";
 import { FaUserTie } from "react-icons/fa";
-import { AuthContext } from "../Components/context/Auth";
+import AuthContext from "../context/AuthContext";
 const Home = () => {
   const [asin, setAsin] = useState("");
+  const { auth, setAuth } = useContext(AuthContext);
   const [loading, setLoading] = useState(false); // State variable for loading status
   const navigate = useNavigate();
   let inputRef = useRef(null);
-  const authContext = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -25,33 +26,35 @@ const Home = () => {
   const handleOnChange = (e) => {
     setAsin(e.target.value);
   };
-  const { loginWithRedirect, logout, isAuthenticated, isLoading, user } =
+  const { loginWithRedirect, logout, isLoading, isAuthenticated, user } =
     useAuth0();
+
   const handleLogin = async () => {
     try {
       await loginWithRedirect();
+      await setAuth(isAuthenticated);
+      console.log("auth on log In =>>", auth);
     } catch (error) {
       CustomToast({ type: "error", message: "Please try again Logging In!" });
     }
   };
+  // useEffect(() => {
+  //   if (auth) {
+  //     CustomToast({ type: "success", message: "User Logged In Successfully" });
+  //   }
+  // }, [auth]);
+
   const handleLogout = async () => {
     try {
       localStorage.clear();
       logout({ returnTo: window.location.origin });
-      CustomToast({ type: "success", message: "User Logged Out" });
+      // console.log("auth on log out =>>", auth);
     } catch (error) {
       CustomToast({ type: "error", message: "Please try again logging out!" });
+    } finally {
+      CustomToast({ type: "success", message: "User Logged Out" });
     }
   };
-  useEffect(() => {
-    if (isAuthenticated) {
-      authContext.setAuth(true);
-      console.log("isAuthenticated on log In =>>", isAuthenticated);
-    } else {
-      authContext.setAuth(false);
-    }
-  }, [isAuthenticated, authContext]);
-
   const handleSearch = async () => {
     const keysToRemove = [
       "reviewData",
@@ -62,23 +65,15 @@ const Home = () => {
     ];
 
     // localStorage.clear();
-    if (isAuthenticated) {
+    if (auth) {
       const asinRegex = /^[A-Z0-9]{10}$/;
       if (asin !== "") {
         if (asinRegex.test(asin)) {
           try {
             setLoading(true); // Set loading to true when search starts
-            const response = await axios.post(
-              "https://breakable-jacquelin-auto-magic-04c769ea.koyeb.app/api/search/product/reviews",
-              {
-                asin: asin,
-              },
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            );
+            const response = await axios.post("/api/search/product/reviews", {
+              asin: asin,
+            });
             keysToRemove.forEach((key) => {
               localStorage.removeItem(key);
               console.log(`${key} has been removed from localStorage`);
@@ -92,7 +87,7 @@ const Home = () => {
               navigate("/reviews", {
                 state: {
                   reviews: response.data.scrapedData,
-                  auth: isAuthenticated,
+                  auth: auth,
                 },
               });
             }
@@ -117,13 +112,12 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    localStorage.setItem("auth", isAuthenticated);
+    localStorage.setItem("auth", auth);
     inputRef.current.focus();
-    console.log("auth Context in Home :", authContext);
   });
   return (
-    <div className="bgDiv bg-slate-950 flex flex-col items-center justify-center py-12">
-      <div className="font-rubik font-bold text-blue-500 text-center text-6xl md:text-8xl lg:text-8xl xl:text-8xl py-12">
+    <div className="flex flex-col items-center justify-center py-6">
+      <div className="font-rubik font-bold text-blue-500 text-center text-4xl md:text-6xl lg:text-6xl xl:text-8xl py-12">
         <span className="text-gray-600">A</span>
         <span className="text-gray-500">U</span>
         <span className="text-gray-400">T</span>
@@ -135,27 +129,23 @@ const Home = () => {
         <span className="text-gray-600">I</span>
         <span className="text-gray-700">C</span>
       </div>
-      <div className="mb-8 text-center">
-        <p className="font-rubik font-bold text-gray-300 text-2xl md:text-3xl lg:text-4xl xl:text-4xl hover:text-blue-800 hover:font-semibold hover:transform hover:scale-105">
-          Transforming voices into insights,
-        </p>
-        <p className="font-rubik font-bold text-gray-300 text-2xl md:text-3xl lg:text-4xl xl:text-4xl hover:text-blue-800 hover:font-semibold hover:transform hover:scale-105">
-          and insights into action.
-        </p>
+      <div className="mb-8 text-center font-rubik font-bold text-gray-300 text-xl md:text-2xl lg:text-3xl xl:text-3xl hover:text-blue-800 hover:font-semibold hover:transform hover:scale-105">
+        <p className="">Transforming voices into insights,</p>
+        <p className="">and insights into action.</p>
       </div>
-      {isAuthenticated && (
+      {auth && (
         <div className="flex flex-col items-center font-bold cursor-pointer mb-4 text-3xl">
-          <strong className="text-gray-100 font-semibold text-center hover:text-blue-500 hover:transform hover:scale-105 mr-4">
-            Hi
+          <strong className="text-blue-500 font-semibold text-center hover:transform hover:scale-105 mr-4">
+            Welcome
           </strong>{" "}
-          <span className="flex justify-center text-blue-600 font-semibold hover:text-blue-500 hover:font-bold hover:transform hover:scale-105">
+          <span className="flex justify-center text-blue-600 font-semibold hover:font-bold hover:transform hover:scale-105">
             {user.name.split(" ")[0].toUpperCase()}
             <FaUserTie className="ml-2 w-7 lg:w-8 h-7 lg:h-8" />
           </span>
         </div>
       )}
       <div className="flex justify-center w-full mb-4">
-        <div className="flex w-full max-w-lg px-4 border text-gray-600 placeholder-gray-600 shadow-sm rounded-full font-semibold bg-slate-900/50 border-blue-700">
+        <div className="flex w-full max-w-md px-4 border text-gray-600 placeholder-gray-600 shadow-sm rounded-full font-semibold bg-slate-900/50 border-blue-700">
           <input
             type="text"
             onChange={handleOnChange}
@@ -169,7 +159,7 @@ const Home = () => {
               disabled={loading}
               className="w-40 h-12 text-md text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-600 hover:to-pink-600 rounded-full font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 hover:transform hover:scale-105 hover:shadow-lg"
             >
-              {loading ? <ButtonLoader /> : "Let's Get Started"}
+              {loading ? <ButtonLoader /> : "Let's Get Reviews"}
             </button>
           </div>
         </div>
@@ -184,7 +174,7 @@ const Home = () => {
         <VideoModal isOpen={isModalOpen} onClose={handleCloseModal} />
       </div>
       <div className="w-full flex justify-center text-[18px]">
-        {isAuthenticated ? (
+        {auth ? (
           <button
             onClick={handleLogout}
             disabled={isLoading}

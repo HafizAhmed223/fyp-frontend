@@ -18,10 +18,10 @@ const Footer = () => {
   };
 
   return (
-    <div className="w-full flex justify-center items-center bg-slate-900 py-8 h-full">
+    <div className="w-full flex flex-end align-baseline justify-center items-center text-center bg-slate-900 py-8 h-full">
       <div className="w-[98%] h-[90%] flex flex-col">
-        <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-8 w-full md:px-0 px-3">
-          <div className="flex flex-col items-center gap-2 shadow-md">
+        <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-8 w-full md:px-0 px-3">
+          <div className="flex flex-col items-center gap-2">
             <div
               className="flex justify-center items-center cursor-pointer "
               onClick={() => navigate("/")}

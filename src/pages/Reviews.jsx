@@ -1,11 +1,11 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GoogleGenerativeAI } from "@google/generative-ai"; // Import GoogleGenerativeAI class
-import CustomToast from "./Shared/alertModal";
+import CustomToast from "../Shared/alertModal";
 import { FaMagic } from "react-icons/fa";
-import ButtonLoader from "./Shared/ButtonLoader";
+import ButtonLoader from "../Shared/ButtonLoader";
 import "../../src/index.css";
-import { AuthContext } from "../Components/context/Auth";
+import AuthContext from "../context/AuthContext";
 
 const Reviews = () => {
   const location = useLocation();
@@ -15,16 +15,16 @@ const Reviews = () => {
   const [allReviewBodies, setAllReviewBodies] = useState("");
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState("");
-  const [auth, setAuth] = useState(false);
+  const { auth } = useContext(AuthContext);
+  // const [auth, setAuth] = useState(false);
   const googleApiKey = "AIzaSyD1fQVny_MTn3jxulRXXlqtCWLQkX8j2c8"; // Use REACT_APP prefix
   const [reviewData, setReviewData] = useState("");
-  const authContext = useContext(AuthContext);
+
   useEffect(() => {
     if (location.state) {
       // If data is available in location.state, use it and save to localStorage
       setReviewData(location.state);
       localStorage.setItem("reviewData", JSON.stringify(location.state));
-      console.log("auth Context in Reviews =>>", authContext);
     } else {
       // If data is not available in location.state, try to retrieve from localStorage
       const localStorageData = localStorage.getItem("reviewData");
@@ -52,9 +52,6 @@ const Reviews = () => {
       }
     }
   };
-  useEffect(() => {
-    fetchData(); // Call the async function inside useEffect
-  }, [reviews, totalReviews, allReviewBodies, location.state]);
 
   const handleSummarize = async () => {
     console.log("Handle Summarized ");
@@ -108,10 +105,13 @@ const Reviews = () => {
     if (!prompt) {
       setPrompt(localStorage.getItem("prompt", prompt));
     }
-  }, []);
+  }, [prompt]);
   useEffect(() => {
-    setAuth(localStorage.getItem("auth"));
+    fetchData(); // Call the async function inside useEffect
   });
+  // useEffect(() => {
+  //   setAuth(localStorage.getItem("auth"));
+  // },[]);
 
   return (
     <div className="bgDiv bg-slate-950 flex-grow flex flex-col py-12">
@@ -126,11 +126,11 @@ const Reviews = () => {
               className="bg-orange-500 text-white rounded-full px-6 py-3 font-semibold shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 hover:transform hover:scale-105 hover:shadow-lg"
               onClick={handleInsights}
             >
-              {loading ? <ButtonLoader /> : "GENERATE INSIGHTS"}
+              {loading ? <ButtonLoader /> : "GET MAGICAL INSIGHTS"}
             </button>
           </div>
         </div>
-        {reviewData != [] ? (
+        {auth ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 w-full max-w-6xl mt-6">
             {reviews.map((review, index) => (
               <div
