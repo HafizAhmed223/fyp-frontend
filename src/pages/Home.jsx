@@ -75,9 +75,11 @@ const Home = () => {
         if (asinRegex.test(asin)) {
           try {
             setLoading(true);
-            const response = await axios.post("/api/search/product/reviews", {
-              asin: asin,
-            });
+            const response = await axios.post(
+              "/api/search/product/reviews",
+              { asin: asin },
+              { headers: { "Content-Type": "application/json" } } // Set the content type here
+            );
             keysToRemove.forEach((key) => {
               localStorage.removeItem(key);
               console.log(`${key} has been removed from localStorage`);
@@ -94,10 +96,17 @@ const Home = () => {
               });
             }
           } catch (error) {
-            CustomToast({ type: "error", message: "Error Scrapping Reviews" });
-            console.error("Error while searching:", error);
-          } finally {
-            setLoading(false);
+            if (error.response) {
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx
+              console.error("Error response data:", error.response.data);
+              console.error("Error response status:", error.response.status);
+              console.error("Error response headers:", error.response.headers);
+              CustomToast({
+                type: "error",
+                message: `Error: ${error.response.statusText}`,
+              });
+            }
           }
         } else {
           CustomToast({ type: "error", message: "Please enter a valid ASIN." });

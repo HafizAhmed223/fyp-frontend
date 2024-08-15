@@ -68,10 +68,14 @@ const CompetitorAnalysis = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/competitor/analysis", {
-        asin1,
-        asin2,
-      });
+      const response = await axios.post(
+        "/api/competitor/analysis",
+        {
+          asin1,
+          asin2,
+        },
+        { headers: { "Content-Type": "application/json" } } // Set the content type here
+      );
       if (!response.data || response.data.length === 0) {
         CustomToast({ type: "error", message: "No Competitors Available" });
       } else {
