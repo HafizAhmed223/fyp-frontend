@@ -32,13 +32,9 @@ const Home = () => {
   const handleLogin = async () => {
     try {
       await loginWithRedirect();
-
       console.log("auth on log In =>>", auth);
     } catch (error) {
       CustomToast({ type: "error", message: "Please try again Logging In!" });
-    }
-    if (user.name) {
-      setAuth(isAuthenticated);
     }
   };
   // useEffect(() => {
@@ -46,6 +42,9 @@ const Home = () => {
   //     CustomToast({ type: "success", message: "User Logged In Successfully" });
   //   }
   // }, [auth]);
+  useEffect(() => {
+    setAuth(isAuthenticated);
+  });
 
   const handleLogout = async () => {
     try {
@@ -90,7 +89,6 @@ const Home = () => {
               navigate("/reviews", {
                 state: {
                   reviews: response.data.scrapedData,
-                  auth: auth,
                 },
               });
             }
@@ -115,7 +113,6 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    localStorage.setItem("auth", auth);
     inputRef.current.focus();
   });
   return (
