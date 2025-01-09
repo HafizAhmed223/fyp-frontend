@@ -131,10 +131,40 @@ const AboutUs = () => {
           </div>
         </div>
       </section>
-      <iframe
-        src="https://app.arcade.software/share/VWtl88nqumdEhkCWL4IB"
-        className="w-full md:h-[1000px] h-[500px]"
-      ></iframe>
+      <div className="relative">
+     <div>
+        {navigator.onLine ? (
+          <iframe
+            src="https://app.arcade.software/share/VWtl88nqumdEhkCWL4IB"
+            className="w-full md:h-[1000px] h-[500px] border rounded-lg shadow-md"
+          ></iframe>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-[500px] bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-md">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-red-500 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 16h-1v-4h-1m0-4h.01M12 8v4m0 4h.01m-6.938 4h13.856c.447 0 .786-.448.666-.89l-1.35-5.405a1.745 1.745 0 00-.058-.18l-3.68-9.13a1 1 0 00-1.8 0l-3.68 9.13a1.745 1.745 0 00-.058.18L5.272 19.11c-.12.442.219.89.666.89z"
+              />
+            </svg>
+            <p className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+              Unable to Load Content
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 text-center max-w-xs">
+              It seems like your internet connection is offline. Please check your connection and try again.
+            </p>
+          </div>
+        )}
+     </div>
+</div>
+
     </div>
   );
 };
